@@ -15,19 +15,6 @@
 #include <fstream>
 using namespace std;
 
-color ray_color(const ray& r, const hittable& world, int depth/*最大递归次数*/) {
-    if (depth <= 0)
-            return color(0,0,0);
-    hit_record rec;
-    if (world.hit(r, 0.001, infinity, rec)) {//之所以是0.001不是0是因为我们想忽略因为浮点导致非常接进0但实际上并不是反射的hit
-        point3 target = rec.p + rec.normal +  random_in_unit_sphere();//计算那个单位圆内随机点的位置,但这个是一个绝对位置.记住加定义域vec3::
-        return 0.8 * ray_color(ray(rec.p, target - rec.p), world,depth-1);//每次反弹只吸收0.5的能量,其实还太保守了
-    }
-    vec3 unit_direction = unit_vector(r.direction());
-    auto t = 0.5*(unit_direction.y() + 1.0);
-    return (1.0-t)*color(0.5, 0.5, 0.5) + t*color(0.5, 0.7, 1.0);
-}
-
 double hit_sphere(const point3& center, double radius, const ray& r){
     vec3 oc = r.origin() - center;//光起点-圆中心(A-C)
     auto a = r.direction().length_squared();//这三个都是公式的分别每个项,r.direction()就是b from判别式,length_sq就是自乘.
@@ -35,6 +22,20 @@ double hit_sphere(const point3& center, double radius, const ray& r){
     auto c = oc.length_squared() - radius*radius;
     auto discriminant = half_b*half_b - a*c;//判别式
     return discriminant>0?((- half_b - sqrt(discriminant) ) / a):-1.0;
+}
+color ray_color(const ray& r, const hittable& world, int depth/*最大递归次数*/) {
+    if (depth <= 0)//弹到0结束
+            return color(0,0,0);
+    hit_record rec;
+    if (world.hit(r, 0.001, infinity, rec)) {//之所以是0.001不是0是因为我们想忽略因为浮点导致非常接进0但实际上并不是反射的hit
+//        point3 target = rec.p + rec.normal +  random_in_unit_sphere();//表面上沿法向量到1单位高度的单位圆心,然后从圆心开始随机出发.这里没有单位化,完成体看下一行
+        point3 target = rec.p + rec.normal +  random_unit_vector();//这里对rius()多了一个单位化步骤,取P+N单位球体**表面**上的随机点,让这个随机向量单位化
+        //为什么是完全球体?Lambertian的BRDF不是半球体吗?首先这里确实是半球体,因为PS被单位化了,自然组成半球体,而原来Lambertian指的是各个方向强度是一样的,没说概率是一样的,现在各个方向都是单位长度了,强度一致
+        return 0.6 * ray_color(ray(rec.p, target - rec.p), world,depth-1);//每次反弹只吸收0.5的能量,其实还太保守了
+    }
+    vec3 unit_direction = unit_vector(r.direction());
+    auto t = 0.5*(unit_direction.y() + 1.0);
+    return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
 }
 
 color ray_color(const ray& r){
@@ -47,7 +48,7 @@ color ray_color(const ray& r){
     //background
     vec3 unit_direction = unit_vector(r.direction());
     t = 0.5*(unit_direction.y() + 1.0);//线性插值中的t
-    return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);//线性插值,StartValue -> EndValue
+    return (1.0-t)*color(0.5, 0.5, 0.5) + t*color(0.5, 0.7, 1.0);//线性插值,StartValue -> EndValue
 //    return color(1,1,1);
 }
 

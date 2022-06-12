@@ -64,13 +64,8 @@ class vec3 {
     
 };
 
-vec3 random_in_unit_sphere() {
-    while (true) { //返回p = -1到1的随机数
-        auto p = vec3::random(-1,1);
-        if (p.length_squared() >= 1) continue;//这是为了防止浮点误差
-        return p;
-    }
-}
+
+
 inline std::ostream& operator<<(std::ostream &out, const vec3 &v) {
     return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2];
 }
@@ -114,6 +109,16 @@ inline vec3 cross(const vec3 &u, const vec3 &v) {
 
 inline vec3 unit_vector(vec3 v) {//归一化函数
     return v / v.length();
+}
+vec3 random_in_unit_sphere() {
+    while (true) { //返回p = -1到1的随机数
+        auto p = vec3::random(-1,1);
+        if (p.length_squared() >= 1) continue;//这是为了防止浮点误差
+        return p;
+    }
+}
+vec3 random_unit_vector() {//单位化rius
+    return unit_vector(random_in_unit_sphere());
 }
 // Type aliases for vec3
 using point3 = vec3;   // 3D point alias
