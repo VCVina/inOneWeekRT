@@ -26,6 +26,8 @@
 		269210E02854CF76008A6915 /* hittable_list.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = hittable_list.h; path = inOneWeekRT/header/hittable_list.h; sourceTree = "<group>"; };
 		269210E12854D79F008A6915 /* rtweekend.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = rtweekend.h; path = inOneWeekRT/header/rtweekend.h; sourceTree = "<group>"; };
 		269210E22855BB98008A6915 /* camera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = camera.h; path = inOneWeekRT/header/camera.h; sourceTree = "<group>"; };
+		269210E92855EDF6008A6915 /* image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image.png; sourceTree = "<group>"; };
+		269210EA2855EE51008A6915 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		26D9C5282813FFF000856CCC /* inOneWeekRT */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = inOneWeekRT; sourceTree = BUILT_PRODUCTS_DIR; };
 		26D9C52B2813FFF000856CCC /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		26D9C5322816825100856CCC /* vec3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = vec3.h; path = inOneWeekRT/header/vec3.h; sourceTree = "<group>"; };
@@ -46,9 +48,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		269210E82855EDF6008A6915 /* img */ = {
+			isa = PBXGroup;
+			children = (
+				269210E92855EDF6008A6915 /* image.png */,
+			);
+			path = img;
+			sourceTree = "<group>";
+		};
 		26D9C51F2813FFF000856CCC = {
 			isa = PBXGroup;
 			children = (
+				269210EA2855EE51008A6915 /* README.md */,
+				269210E82855EDF6008A6915 /* img */,
 				269210E22855BB98008A6915 /* camera.h */,
 				269210E12854D79F008A6915 /* rtweekend.h */,
 				269210E02854CF76008A6915 /* hittable_list.h */,
