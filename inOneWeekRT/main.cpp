@@ -36,7 +36,7 @@ color ray_color(const ray& r, const hittable& world, int depth/*最大递归次�
 //        return 0.7 * ray_color(ray(rec.p, target - rec.p), world,depth-1);//每次反弹只吸收0.5的能量,其实还太保守了
         /*金属材质*/
         ray scattered;
-        color attenuation;
+        color attenuation;//下面scatter函数中有一行attenuation = albedo;函数中赋值以后就可以继续用在return attenuation中
         if (rec.mat_ptr->scatter(r, rec, attenuation, scattered))//如果还有反射
            return attenuation * ray_color(scattered, world, depth-1);//继续递归并乘以一个颜色
         return color(0,0,0);
@@ -76,7 +76,7 @@ int main() {
     
     auto material_ground = make_shared<lambertian>(color(0.3, 0.8, 0.5));
     auto material_center = make_shared<lambertian>(color(0.7, 0.3, 0.3));
-    auto material_left   = make_shared<metal>(color(0.8, 0.8, 0.8));
+    auto material_left   = make_shared<metal>(color(0.8, 0.8, 0.8));//这里的color在构造函数中就付给了albedo,albedo就会给attenuation
     auto material_right  = make_shared<metal>(color(0.8, 0.6, 0.2));
 
     world.add(make_shared<sphere>(point3( 0.0, -100.5, -1.0), 100.0, material_ground));
