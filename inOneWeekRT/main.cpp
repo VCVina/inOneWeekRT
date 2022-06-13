@@ -10,6 +10,7 @@
 #include "ray.h"
 #include "camera.h"
 #include "vec3.h"
+#include "material.h"
 
 #include <iostream>
 #include <fstream>
@@ -29,10 +30,18 @@ color ray_color(const ray& r, const hittable& world, int depth/*最大递归次�
     hit_record rec;
     if (world.hit(r, 0.001, infinity, rec)) {//之所以是0.001不是0是因为我们想忽略因为浮点导致非常接进0但实际上并不是反射的hit
 //        point3 target = rec.p + rec.normal +  random_in_unit_sphere();//表面上沿法向量到1单位高度的单位圆心,然后从圆心开始随机出发.这里没有单位化,完成体看下一行
-        point3 target = rec.p + rec.normal +  random_unit_vector();//这里对rius()多了一个单位化步骤,取P+N单位球体**表面**上的随机点,让这个随机向量单位化
+//        point3 target = rec.p + rec.normal +  random_unit_vector();//这里对rius()多了一个单位化步骤,取P+N单位球体**表面**上的随机点,让这个随机向量单位化
+//        point3 target = rec.p +  random_in_hemisphere(rec.normal);
         //为什么是完全球体?Lambertian的BRDF不是半球体吗?首先这里确实是半球体,因为PS被单位化了,自然组成半球体,而原来Lambertian指的是各个方向强度是一样的,没说概率是一样的,现在各个方向都是单位长度了,强度一致
-        return 0.6 * ray_color(ray(rec.p, target - rec.p), world,depth-1);//每次反弹只吸收0.5的能量,其实还太保守了
+//        return 0.7 * ray_color(ray(rec.p, target - rec.p), world,depth-1);//每次反弹只吸收0.5的能量,其实还太保守了
+        /*金属材质*/
+        ray scattered;
+        color attenuation;
+        if (rec.mat_ptr->scatter(r, rec, attenuation, scattered))//如果还有反射
+           return attenuation * ray_color(scattered, world, depth-1);//继续递归并乘以一个颜色
+        return color(0,0,0);
     }
+    
     vec3 unit_direction = unit_vector(r.direction());
     auto t = 0.5*(unit_direction.y() + 1.0);
     return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
@@ -64,8 +73,16 @@ int main() {
     
     // World
     hittable_list world;
-    world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
-    world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
+    
+    auto material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
+    auto material_center = make_shared<lambertian>(color(0.7, 0.3, 0.3));
+    auto material_left   = make_shared<metal>(color(0.8, 0.8, 0.8));
+    auto material_right  = make_shared<metal>(color(0.8, 0.6, 0.2));
+
+    world.add(make_shared<sphere>(point3( 0.0, -100.5, -1.0), 100.0, material_ground));
+    world.add(make_shared<sphere>(point3( 0.0,    0.0, -1.0),   0.5, material_center));
+    world.add(make_shared<sphere>(point3(-1.0,    0.0, -1.0),   0.5, material_left));
+    world.add(make_shared<sphere>(point3( 1.0,    0.0, -1.0),   0.5, material_right));
 
     // Camera
     camera cam;

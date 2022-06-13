@@ -12,7 +12,7 @@
 class sphere : public hittable {
     public:
         sphere() {}
-        sphere(point3 cen, double r) : center(cen), radius(r) {};
+        sphere(point3 cen, double r,shared_ptr<material> m) : center(cen), radius(r), mat_ptr(m) {};
 
         virtual bool hit(//虚函数获得定义
             const ray& r, double t_min, double t_max, hit_record& rec) const override;//override表示重写父类的虚函数,见下文
@@ -20,6 +20,7 @@ class sphere : public hittable {
     public:
         point3 center;
         double radius;
+        shared_ptr<material> mat_ptr;
 };
 
 bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {//在这里重写
@@ -45,6 +46,7 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) cons
     rec.p = r.at(rec.t); //返回一个坐标:orig + rec.t*dir  rec.t就是root = (-half_b - sqrtd) / a , 碰撞点的根(解)!
     vec3 outward_normal = (rec.p - center) / radius; //ourward_normal永远是落点位置-center/半径
     rec.set_face_normal(r, outward_normal);
+    rec.mat_ptr = mat_ptr;//给rec记录的材质信息
 
     return true;
 }

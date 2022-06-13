@@ -48,6 +48,11 @@ class vec3 {
         double length_squared() const {
             return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
         }
+        bool near_zero() const {
+            //在材质中,如果我们的散射方向和法线方向想加刚好为0,会有不好的事情发生
+            const auto s = 1e-8;
+            return (fabs(e[0]) < s) && (fabs(e[1]) < s) && (fabs(e[2]) < s);
+        }
         inline static vec3 random() {
             return vec3(random_double(), random_double(), random_double());//返回三个clamp到1的随机数
         }
@@ -119,6 +124,16 @@ vec3 random_in_unit_sphere() {
 }
 vec3 random_unit_vector() {//单位化rius
     return unit_vector(random_in_unit_sphere());
+}
+vec3 random_in_hemisphere(const vec3& normal) {
+    vec3 in_unit_sphere = random_in_unit_sphere();
+    if (dot(in_unit_sphere, normal) > 0.0) // In the same hemisphere as the normal
+        return in_unit_sphere;
+    else
+        return -in_unit_sphere;//和法线相乘如果是负数就真回来
+}
+vec3 reflect(const vec3& v, const vec3& n) {//镜面反射函数:R=I-2(I\dotN)N,I是入射光向量(不一定是单位向量),N是单位法线.
+    return v - 2*dot(v,n)*n;
 }
 // Type aliases for vec3
 using point3 = vec3;   // 3D point alias

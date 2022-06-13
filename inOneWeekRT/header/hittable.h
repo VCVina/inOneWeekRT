@@ -7,10 +7,14 @@
 #define hittable_h
 
 #include "ray.h"
+#include "rtweekend.h"
+
+class material;
 
 struct hit_record {
     point3 p;//返回的落点
     vec3 normal;//返回的normal
+    shared_ptr<material> mat_ptr;//返回的材质信息
     double t;//撞击时的时间
     bool front_face;//射线和法线是否在同一个方向
     
