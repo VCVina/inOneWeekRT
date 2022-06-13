@@ -8,4 +8,4 @@ dependencies: \
   /Users/nike/Documents/utokyoOffline/研究/Rendering_offline/inOneWeekRT/inOneWeekRT/header/hittable.h \
   /Users/nike/Documents/utokyoOffline/研究/Rendering_offline/inOneWeekRT/inOneWeekRT/header/sphere.h \
   /Users/nike/Documents/utokyoOffline/研究/Rendering_offline/inOneWeekRT/inOneWeekRT/header/camera.h \
-  /Users/nike/Documents/utokyoOffline/研究/Rendering_offline/inOneWeekRT/material.h
+  /Users/nike/Documents/utokyoOffline/研究/Rendering_offline/inOneWeekRT/inOneWeekRT/header/material.h
