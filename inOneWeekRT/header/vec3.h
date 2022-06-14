@@ -135,6 +135,12 @@ vec3 random_in_hemisphere(const vec3& normal) {
 vec3 reflect(const vec3& v, const vec3& n) {//镜面反射函数:R=I-2(I\dotN)N,I是入射光向量(不一定是单位向量),N是单位法线.
     return v - 2*dot(v,n)*n;
 }
+vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat) {//这里的uv输入的是unit_direction也就是入射单位方向向量
+    auto cos_theta = fmin(dot(-uv, n), 1.0);//因此cos是入射和n的cos值
+    vec3 r_out_perp =  etai_over_etat * (uv + cos_theta*n);//etai_over_etat就是折射率eta入射和eta出射的比值,为什么uv是R?
+    vec3 r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.length_squared())) * n;//c^2+s^2=1所以
+    return r_out_perp + r_out_parallel;
+}
 // Type aliases for vec3
 using point3 = vec3;   // 3D point alias
 using color = vec3;    // RGB color
